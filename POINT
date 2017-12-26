@@ -1,0 +1,178 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define N 50
+int l = 1;
+
+struct User
+{
+char name[10];//名字
+double number;//有理数
+double goal;//得分
+double golden;//黄金数
+User* next=NULL;
+};
+
+void getin_name(User *Head1, int sum_people1)//输入名字和数字
+{
+User *q, *p;
+q = Head1;
+for (int i = 0; i<sum_people1; i++)
+{
+p = (User *)malloc(sizeof(User));
+p->next = NULL;
+printf("输入名字:\n");
+scanf("%s", p->name);
+printf("输入数字\n");
+scanf("%lf", &p->number);
+printf("\n");
+printf("\n");
+q->next = p;
+q = p;
+}
+
+}
+
+void get_count(User *Head2, int sum_people2)
+{
+double sum = 0;
+User *y, *s;
+y = Head2->next;
+s = Head2->next;
+while (y != NULL)
+{
+sum = y->number + sum;
+y = y->next;
+}
+s = Head2->next;
+while (s != NULL)
+{
+s->golden = sum / sum_people2*0.618;
+s = s->next;
+}
+}
+
+void get_score(User *Head3, int sum_people3, double value11, double value21)//计算得分
+{
+User *e;
+e = Head3->next;
+while (e != NULL)
+{
+if (e->number>e->golden)
+{
+if (e->number - e->golden == value11)
+{
+e->goal = -2;
+
+}
+else if (e->number - e->golden == value21)
+{
+
+e->goal = sum_people3;
+}
+else
+{
+e->goal = 0;
+}
+
+e = e->next;
+
+}
+else
+{
+if (e->golden - e->number == value11)
+{
+e->goal = -2;
+}
+if (e->golden - e->number == value21)
+{
+e->goal = sum_people3;
+}
+else
+{
+e->goal = 0;
+}
+e = e->next;
+}
+}
+}
+
+void put_message(User *Head4)//输出结果
+{
+User *h;
+h = Head4->next;
+printf("第%d轮情况：\n", l);
+while (h!= NULL)
+{
+printf("姓名：%s 输入的数字：%lf 本人得分：%lf 黄金值：%lf\n", h->name, h->number, h->goal, h->golden);
+h = h->next;
+}
+l++;
+}
+
+int main()
+{
+User users[N];
+double gol;
+double value1 = -1;//最大值
+double value2 = 1000;
+int sum_people;//总人数
+int ring;//总轮数
+printf(" **********黄金点游戏*********\n");
+printf(" 输入玩游戏总人数：\n");
+scanf("%d", &sum_people);
+printf(" 输入想要玩的总轮数：\n");
+scanf("%d", &ring);//总轮数
+printf("\n");
+printf("\n");
+
+User *Head, *u;
+for (int i = 0; i < ring; i++) {
+Head = (User *)malloc(sizeof(User));
+Head->next = NULL;
+getin_name(Head, sum_people);
+get_count(Head, sum_people);
+
+//比较
+u = Head->next;
+while (u != NULL)
+{
+if (u->number > u->golden)
+{
+gol = u->number - u->golden;
+if (gol > value1)
+{
+value1 = gol;
+}
+if (gol <= value2)
+{
+value2 = gol;
+}
+u = u->next;
+}
+else {
+gol = u->golden - u->number;
+{
+if (gol > value1)
+{
+value1 = gol;
+}
+if (gol <= value2)
+{
+value2 = gol;
+}
+u = u->next;
+}
+}
+}
+get_score(Head, sum_people, value1, value2);
+put_message(Head);
+users[i].next = Head->next;
+}
+for (int r = 0; r < ring; r++) { //游戏结束后输出各轮游戏的黄金点
+printf("第%d轮结果：\n", r+1);
+printf("此轮黄金值是：%lf ", users[r].next->golden);
+printf("\n");
+printf("\n");
+}
+return 0;
+}
